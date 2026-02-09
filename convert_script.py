@@ -30,6 +30,9 @@ class ScriptConfig(BaseModel):
     resources_dir: str
     timeline: List[TimelineItem]
     result_file: str
+    output_format: Optional[str] = None
+    resolution: Optional[str] = "1080p"
+    orientation: Optional[str] = "landscape"
 
 
 def parse_time_to_str(seconds: int) -> str:
@@ -39,7 +42,7 @@ def parse_time_to_str(seconds: int) -> str:
     return f"{minutes:02d}:{secs:02d}"
 
 
-def parse_md_time(time_str: str) -> str:
+def parse_md_time(time_str: str) -> tuple[str, str]:
     """Parse time from markdown format."""
     time_str = time_str.strip()
     if " - " in time_str:
@@ -75,13 +78,20 @@ def md_to_json(md_path: Path) -> ScriptConfig:
     name_match = re.search(r'##\s*name:\s*(.+)', content)
     resources_match = re.search(r'##\s*resources_dir:\s*(.+)', content)
     result_match = re.search(r'##\s*result_file:\s*(.+)', content)
+    output_format_match = re.search(r'##\s*output_format:\s*(.+)', content)
+    resolution_match = re.search(r'##\s*resolution:\s*(.+)', content)
+    orientation_match = re.search(r'##\s*orientation:\s*(.+)', content)
     
     if not all([name_match, resources_match, result_match]):
         raise ValueError("Missing required headers in markdown file")
     
+    assert name_match is not None and resources_match is not None and result_match is not None
     name = name_match.group(1).strip()
     resources_dir = resources_match.group(1).strip()
     result_file = result_match.group(1).strip()
+    output_format = output_format_match.group(1).strip() if output_format_match else None
+    resolution = resolution_match.group(1).strip() if resolution_match else "1080p"
+    orientation = orientation_match.group(1).strip() if orientation_match else "landscape"
     
     # Parse table
     timeline = []
@@ -120,7 +130,10 @@ def md_to_json(md_path: Path) -> ScriptConfig:
         name=name,
         resources_dir=resources_dir,
         timeline=timeline,
-        result_file=result_file
+        result_file=result_file,
+        output_format=output_format,
+        resolution=resolution,
+        orientation=orientation
     )
 
 
@@ -132,6 +145,16 @@ def json_to_md(config: ScriptConfig) -> str:
     lines.append(f"## name: {config.name}")
     lines.append(f"## resources_dir: {config.resources_dir}")
     lines.append("")
+    
+    # Optional headers
+    if config.output_format:
+        lines.append(f"## output_format: {config.output_format}")
+    if config.resolution and config.resolution != "1080p":
+        lines.append(f"## resolution: {config.resolution}")
+    if config.orientation and config.orientation != "landscape":
+        lines.append(f"## orientation: {config.orientation}")
+    if config.output_format or (config.resolution and config.resolution != "1080p") or (config.orientation and config.orientation != "landscape"):
+        lines.append("")
     
     # Table header
     lines.append("| # | Resources | Time | Start_Effect | Start_Duration | Effect_During | End_Effect | End_Duration | Description")

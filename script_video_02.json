@@ -27,8 +27,6 @@
       "description": null
     }
   ],
-  "result_file": "video_res_01.mp4",
+  "result_file": "video_res_orig.mp4",
   "output_format": "mp4",
-  "resolution": "1080p",
-  "orientation": "landscape"
 }
