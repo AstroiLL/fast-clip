@@ -84,12 +84,37 @@ uv run python main.py script_video_01.json
 # MD → JSON
 uv run python convert_script.py script.md
 
-# JSON → MD  
+# JSON → MD
 uv run python convert_script.py script.json
 
 # С указанием выходного файла
 uv run python convert_script.py input.md output.json
 ```
+
+### Проверка скрипта перед сборкой
+
+Проверьте скрипт на ошибки перед запуском:
+
+```bash
+# Молчаливый режим (только код возврата)
+uv run python check_script.py script.json
+
+# Подробный режим с выводом всех проверок
+uv run python check_script.py -v script.json
+```
+
+Проверка включает:
+- Корректность JSON-формата
+- Наличие всех обязательных полей
+- Существование исходных видео
+- Корректность временных меток
+- Проверку эффектов и их длительностей
+- Соответствие параметров допустимым значениям
+
+**Коды возврата:**
+- `0` - проверка пройдена
+- `1` - есть ошибки
+- `2` - неверные аргументы
 
 ## Формат скрипта (JSON)
 

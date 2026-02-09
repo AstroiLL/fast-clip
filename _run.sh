@@ -1,2 +1,2 @@
-uv run main.py assembly $*
+uv run main.py $*
 
