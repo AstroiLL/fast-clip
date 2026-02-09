@@ -18,7 +18,7 @@
       "id": 2,
       "resource": "clip_02.mp4",
       "time_start": "00:00",
-      "time_end": "00:07",
+      "time_end": "00:08",
       "start_effect": null,
       "start_duration": null,
       "effect_during": null,
@@ -27,6 +27,7 @@
       "description": null
     }
   ],
-  "result_file": "video_test_04.mp4",
-  "output_format": "mp4"
+  "result_file": "video_test_05.mp4",
+  "output_format": "mp4",
+  "orientation": "portrait"
 }
