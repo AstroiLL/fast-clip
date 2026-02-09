@@ -21,6 +21,9 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 This file provides guidelines and commands for agentic coding agents working in this repository.
 
+## MCP servers
+Use MCP Context7
+
 ## Build, Lint, and Test Commands
 
 ```bash

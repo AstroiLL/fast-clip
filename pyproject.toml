@@ -1,7 +1,7 @@
 [project]
 name = "fast-clip"
 version = "0.1.0"
-description = "Add your description here"
+description = "Fast video assembly tool from JSON scripts"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["moviepy>=2.0.0", "pydantic>=2.0.0"]

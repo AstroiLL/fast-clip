@@ -11,3 +11,9 @@ wheels/
 
 # OpenCode internal files
 .opencode/
+
+*.mp4
+*.mp3
+*.mov
+*.avi
+*.mkv
