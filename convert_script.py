@@ -9,6 +9,9 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
+# Import check module
+from fast_clip.check import check_script
+
 
 class TimelineItem(BaseModel):
     """Single timeline item."""
@@ -201,6 +204,26 @@ def convert_file(input_path: Path, output_path: Optional[Path] = None) -> Path:
         print(f"Converted: {input_path} -> {output_path}")
         
     elif input_path.suffix == '.json':
+        # Validate JSON before conversion
+        print(f"Validating: {input_path}")
+        is_valid, results = check_script(input_path, verbose=False)
+
+        if not is_valid:
+            print("\n✗ Validation failed with errors:")
+            for result in results:
+                if result.status == "ERROR":
+                    print(f"  ✗ {result.field}: {result.message}")
+                    if result.suggestion:
+                        print(f"    → {result.suggestion}")
+            print("\nPlease fix the errors before converting.")
+            raise ValueError("Script validation failed")
+
+        warnings = [r for r in results if r.status == "WARNING"]
+        if warnings:
+            print(f"⚠ Validation passed with {len(warnings)} warning(s)")
+        else:
+            print("✓ Validation passed")
+
         # JSON to MD
         with open(input_path, 'r', encoding='utf-8') as f:
             data = json.load(f)

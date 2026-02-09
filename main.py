@@ -10,6 +10,9 @@ from moviepy.video.VideoClip import VideoClip
 from pydantic import BaseModel, Field, model_validator
 from typing import List, Optional, Tuple, Union
 
+# Import check module
+from fast_clip.check import check_script
+
 
 # Supported formats and resolutions
 SUPPORTED_FORMATS = {"mp4", "avi", "mov", "mkv"}
@@ -306,18 +309,41 @@ def main():
         print("Usage: python main.py <script.json>")
         print("Example: python main.py script_video_01.json")
         sys.exit(1)
-    
+
     script_path = Path(sys.argv[1])
-    
+
     if not script_path.exists():
         print(f"Error: Script file not found: {script_path}")
         sys.exit(1)
-    
+
+    # Validate script before processing
+    print(f"Validating script: {script_path}")
+    is_valid, results = check_script(script_path, verbose=False)
+
+    if not is_valid:
+        print("\n✗ Validation failed with errors:")
+        for result in results:
+            if result.status == "ERROR":
+                print(f"  ✗ {result.field}: {result.message}")
+                if result.suggestion:
+                    print(f"    → {result.suggestion}")
+        print("\nPlease fix the errors and try again.")
+        print(f"For detailed info, run: python check.py -v {script_path}")
+        sys.exit(1)
+
+    # Check for warnings
+    warnings = [r for r in results if r.status == "WARNING"]
+    if warnings:
+        print(f"⚠ Validation passed with {len(warnings)} warning(s)")
+    else:
+        print("✓ Validation passed")
+
+    print()
     print(f"Loading script: {script_path}")
-    
+
     with open(script_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    
+
     config = ScriptConfig(**data)
     print(f"Project: {config.name}")
     print(f"Resources: {config.resources_dir}")
@@ -329,10 +355,10 @@ def main():
     if config.orientation:
         print(f"Orientation: {config.orientation}")
     print()
-    
+
     script_dir = script_path.parent
     output_path = assemble_video(config, script_dir)
-    
+
     print(f"\nVideo assembled successfully: {output_path}")
 
 

@@ -96,11 +96,17 @@ uv run python convert_script.py input.md output.json
 Проверьте скрипт на ошибки перед запуском:
 
 ```bash
-# Молчаливый режим (только код возврата)
-uv run python check_script.py script.json
+# Через модуль (рекомендуется)
+uv run python check.py script.json              # Молчаливый режим
+uv run python check.py -v script.json           # Подробный режим
 
-# Подробный режим с выводом всех проверок
-uv run python check_script.py -v script.json
+# Через Python модуль
+uv run python -m fast_clip.check script.json    # Молчаливый режим
+uv run python -m fast_clip.check -v script.json # Подробный режим
+
+# После установки пакета
+fast-clip-check script.json                     # Молчаливый режим
+fast-clip-check -v script.json                  # Подробный режим
 ```
 
 Проверка включает:

@@ -5,3 +5,6 @@ description = "Fast video assembly tool from JSON scripts"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = ["moviepy>=2.0.0", "pydantic>=2.0.0"]
+
+[project.scripts]
+fast-clip-check = "fast_clip.check.__main__:main"
